@@ -1,0 +1,16 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org"><head><title>Overview · Orbit</title><link rel="stylesheet" href="/css/app.css"></head><body>
+<div th:replace="~{fragments :: sidebar}"></div><main class="main">
+<header class="topbar"><div><div class="eyebrow">WORKSPACE / OVERVIEW</div><h1>Good day, team.</h1><p class="muted">Here's what's happening with your subscriptions.</p></div><button class="theme-btn" onclick="toggleTheme()">◐ Theme</button></header>
+<div th:if="${success}" class="alert success" th:text="${success}"></div><div th:if="${error}" class="alert error" th:text="${error}"></div>
+<section class="stats">
+<div class="stat-card"><span>ACTIVE SUBSCRIPTIONS</span><strong th:text="${active}">0</strong><small>Currently running</small></div>
+<div class="stat-card"><span>PAYMENTS COLLECTED</span><strong th:text="${#numbers.formatDecimal(collected,1,2)}">0.00</strong><small>Recorded payments</small></div>
+<div class="stat-card"><span>OUTSTANDING</span><strong th:text="${#numbers.formatDecimal(outstanding,1,2)}">0.00</strong><small>Balance to collect</small></div>
+<div class="stat-card"><span>OVERDUE INVOICES</span><strong th:text="${overdue}">0</strong><small>Need attention</small></div>
+</section>
+<section class="panel"><div class="panel-head"><div><h2>Subscription activity</h2><p class="muted">Latest records from your database</p></div><a class="text-link" href="/subscriptions">View all →</a></div>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>Customer</th><th>Plan</th><th>Quantity</th><th>Status</th><th>Action</th></tr></thead><tbody>
+<tr th:each="s : ${subscriptions}"><td th:text="'SUB-'+${s.id}"></td><td th:text="${s.customer.name}"></td><td th:text="${s.plan.name}"></td><td th:text="${s.quantity}"></td><td><span class="pill" th:text="${s.status}"></span></td><td><form th:if="${s.status.name() == 'ACTIVE'}" th:action="@{/subscriptions/{id}/invoice(id=${s.id})}" method="post"><button class="small-btn">Generate invoice</button></form></td></tr>
+<tr th:if="${#lists.isEmpty(subscriptions)}"><td colspan="6" class="empty">No subscriptions yet. Create your first one.</td></tr>
+</tbody></table></div></section>
+</main><script src="/js/app.js"></script></body></html>
